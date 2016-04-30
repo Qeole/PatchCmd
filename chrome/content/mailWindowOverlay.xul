@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<overlay id="patchCmd"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/javascript" src="chrome://patchcmd/content/mailWindowOverlay.js"/>
+  <!--
+    Add an option inside the “Other” actions menu (besides “Reply”, “Reply to
+    all”… buttons for selected email.
+    -->
+  <menupopup id="otherActionsPopup">
+    <menuseparator id="patchCmdSeparator"/>
+    <menuitem id="patchCmdItem"
+      label="Generate patch command"
+      accesskey="C"
+      oncommand="launchPopup();"/>
+  </menupopup>
+</overlay>

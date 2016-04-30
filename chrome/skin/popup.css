@@ -1,0 +1,9 @@
+#patchCmdBox {
+  font-family: monospace;
+  color:       #22427c;
+}
+
+::-moz-selection {
+  color:       white;
+  background:  #22427c;
+}

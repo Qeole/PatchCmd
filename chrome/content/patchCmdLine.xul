@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://patchcmd/skin/popup.css" type="text/css"?>
+
+<dialog
+  id="patchCmd-popup"
+  title="This is your command line to send a patch!"
+  width="1200"
+  height="300"
+  buttons="accept"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <!-- The text box that contains the generated command line. -->
+  <textbox id="patchCmdBox"
+    rows="10"
+    multiline="true"/>
+
+  <!-- Load the script in the end, or it will not find the text box. -->
+  <script type="application/javascript"
+    src="chrome://patchcmd/content/patchcmd.js"/>
+</dialog>

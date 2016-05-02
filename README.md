@@ -29,9 +29,9 @@ Under UNIX-like systems you can create the .xpi file by simply running:
 
 Once installed, go to Thunderbird and select an email, and go to the email pane
 (the one in which the body of the email is displayed). You have `Reply` and
-`Reply All`/`Reply to list` and `Forward` and `Archive`, `Junk` buttons and so
-on at the top of the pane, on the header box. The last of those buttons labeled
-`Other`. It opens a drop-down menu if you click on it. Do so: there is now a
+`Reply All`/`Reply List` and `Forward` and `Archive`, `Junk` buttons and so on
+at the top of the pane, on the header box. The last of those buttons labeled
+`More ⏷`. It opens a drop-down menu if you click on it. Do so: there is now a
 new item entitled `Generate patch command`. This is it! Click on it, and a
 pop-up window will show you the generated command line, already selected for
 you to copy.
@@ -41,7 +41,7 @@ copy it.
 
 ## Screenshots
 
-The new command (sorry guys, my interface is not in English):
+The new command:
 
 ![New command](misc/button.png).
 

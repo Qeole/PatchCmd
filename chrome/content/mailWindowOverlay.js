@@ -51,7 +51,7 @@ function launchPopup() {
     let option;
     switch (headerName) {
       case "subject":
-        cmdLine.subject       = formatOption("--subject",     value);
+        cmdLine.subject       = formatOption("--compose --subject",     value);
         break;
       case "message-id":
         cmdLine["message-id"] = formatOption("--in-reply-to", value);

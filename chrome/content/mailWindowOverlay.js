@@ -5,6 +5,9 @@ Components.utils.import("resource:///modules/mailServices.js");
  * object and pass the text command line to it so that it can print it.
  */
 function launchPopup() {
+  /* Thunderbird parses the headers of currently selected email and stores them
+   * in currentHeaderData.
+   */
   if (!currentHeaderData)
     return;
 
@@ -16,34 +19,35 @@ function launchPopup() {
   let myFullAdress = myIdentity.fullName ?
                      myIdentity.fullName + " <" + gMyEmail + ">" : gMyEmail;
 
+  /* Globally define a variable pointing to user preferences for the add-on. */
+  gPrefs = Components.classes["@mozilla.org/preferences-service;1"]
+    .getService(Components.interfaces.nsIPrefService)
+    .getBranch("patchCmd.");
+
   /* Contains all the field we will get from the header, plus user-defined
-   * prefix and suffix, plus 'from' field we fill with the user email address
-   * corresponding with default identity for the mail we answer to.
+   * prefix and suffix.
    *
    * We will enclose the value within single quotes to prevent the shell from
    * interpreting any special character. So we also need to shell-escape inner
    * single quotes.
    *
-   * TODO: PREFS: prefix and suffix should be configurable through a user
-   * preference.
+   * Note that "from" is not defined from the headers, but contains the address
+   * associated to default user's identity associated with the email we answer
+   * to.
    */
   let cmdLine = {
-    prefix:       "git send-email",
     subject:      "",
-    from:         " --from='" + myFullAdress.replace(/'/g, "'\\''") + "'",
-    to:           "",
-    cc:           "",
-    bcc:          "",
+    from:         [ "'" + myFullAdress.replace(/'/g, "'\\''") + "'" ],
+    to:           [],
+    cc:           [],
+    bcc:          [],
     "message-id": "",
-    suffix:       ""
   };
 
   /* Fill cmdLine items attributes with data from the parsed header. */
   for (let headerName in cmdLine) {
     let headerField = currentHeaderData[headerName];
-    /* Return if header is not present in the email - this also means that we
-     * leave here for prefix and suffix, without changing them.
-     */
+    /* Return if header is not present in the email. */
     if (!headerField || !headerField.headerValue)
       continue;
 
@@ -51,31 +55,33 @@ function launchPopup() {
     let option;
     switch (headerName) {
       case "subject":
-        cmdLine.subject       = formatOption("--compose --subject",     value);
+        cmdLine.subject       = formatOption(value);
         break;
       case "message-id":
-        cmdLine["message-id"] = formatOption("--in-reply-to", value);
+        cmdLine["message-id"] = formatOption(value);
         break;
       case "from":
         /* If I sent that email, skip my address: I do not want to answer to
          * myself. Otherwise, answer to the sender: add them as a recipient
          * (--to).
          */
-        if (value.indexOf(gMyEmail) >= 0)
+        if (value.indexOf(gMyEmail) >= 0) {
+          cmdLine.amITheSender = true;
           continue;
-        option = formatAddresses("to", value);
+        }
+        cmdLine.amITheSender = false;
+        option = formatAddresses(value);
         if (option) {
-          cmdLine.to          += option;
+          cmdLine.to = cmdLine.to.concat(option);
         }
         break;
       default:
-        option = formatAddresses(headerName, value);
+        option = formatAddresses(value);
         if (option) {
-          cmdLine[headerName] += option;
+          cmdLine[headerName] = cmdLine[headerName].concat(option);
         }
     }
   }
-
   /* Launch pop-up dialog and pass the cmdLine object to it. */
   window.openDialog('chrome://patchcmd/content/patchCmdLine.xul',
                     'patchCmdLine',
@@ -85,54 +91,54 @@ function launchPopup() {
 
 /* Returns a single formatted option.
  *
- * @param aOptionName Name of the option for the command line, including '--'.
- * @param aValue      Value for the option, to be enclose within singe quotes.
- * @return            A string: the formatted option for the command line.
+ * @param aValue      Value for the option, to be enclosed within singe quotes.
+ *                    Inner quotes are escaped.
+ * @return            String: the formatted option value for the command line.
  *
  * Example:
  *
- * formatOption("--subject", "This is my subject");
+ * formatOption("It's my subject");
  *   returns
- * ␣--subject='This is my subject'
- * (note the space at the beginning).
+ * 'It'\''s my subject'
  */
-function formatOption(aOptionName, aValue)
+function formatOption(aValue)
 {
-    return " " + aOptionName + "='" + aValue.replace(/'/g, "'\\''") + "'";
+    return "'" + aValue.replace(/'/g, "'\\''") + "'";
 }
 
 /* Returns, from a list of addresses obtained from an email header, a list of
  * formatted options containing email addresses. If found, the email
  * corresponding to the identity of the current user is excluded from the list.
  *
- * @param aField      Name of the option for the command line, WITHOUT '--'.
  * @param aEmailList  List of the email addresses, potentially including full
  *                    names as well, as parsed from the header.
- * @return            A string: the several formatted options, excluding email
- *                    address of user for current parsed email.
- *                    May alternatively return null if no address (or only the
- *                    user's) is found.
+ * @return            Array: the several formatted option values, excluding
+ *                    email address of user for current parsed email. Inner
+ *                    single quotes are escaped.
+ *                    May alternatively return an empty object if no address
+ *                    (or only the user's) is found.
  *
  * Example:
  *
- * formatAddresses("to", "abc@def.gh\n John Doe <john@doe.org>");
+ * formatAddresses("abc@def.gh\n <my@own.address>\n John Doe <john@doe.org>");
  *   returns
- * ␣--to='abc@def.gh' --to='John Doe <john@doe.org>'
+ * ["'abc@def.gh'", "'John Doe <john@doe.org>'"]
  */
-function formatAddresses(aField, aEmailList)
+function formatAddresses(aEmailList)
 {
   if (!aEmailList)
-    return;
+    return [];
 
   let fullNames = {};
   let addresses = {};
   let names     = {};
-  let numAddresses = MailServices.
-    headerParser.parseHeadersWithArray(aEmailList,
-                                       addresses,
-                                       fullNames,
-                                       names);
-  let res = "";
+  /* Use Thunderbird email list parser. */
+  let numAddresses = MailServices
+    .headerParser.parseHeadersWithArray(aEmailList,
+                                        addresses,
+                                        fullNames,
+                                        names);
+  let res = [];
   let index = 0;
 
   while (index < numAddresses) {
@@ -141,15 +147,13 @@ function formatAddresses(aField, aEmailList)
       address = fullNames.value[index] + " <" + address + ">";
     index++;
 
-    let optionName = "";
     /* If I am the recipient of the email, or in copy, I probably do not wish
      * to answer to myself; skip my email.
      */
     if (address.indexOf(gMyEmail) >= 0)
       continue;
-    optionName = "--" + aField;
 
-    res += " " + optionName + "='" + address.replace(/'/g, "'\\''") + "'";
+    res.push("'" + address.replace(/'/g, "'\\''") + "'");
   }
 
   return res;

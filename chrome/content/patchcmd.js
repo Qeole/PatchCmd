@@ -4,7 +4,7 @@
  * This enables to recompose the command line by selecting only the parts we
  * want.
  */
-(function patchCmdUpdate() {
+function patchCmdUpdate() {
   let cmdLine = window.arguments[0];
 
   /* Get the list of the headers we want to use to create options. */
@@ -61,9 +61,61 @@
   );
 
   document.getElementById("patchCmdBox").value = resCmdLine;
+}
 
-  /* Asynchrony - wait for the text to be added before triggering selection. */
-  setTimeout(function () {
-    document.getElementById("patchCmdBox").select()
-  }, 50); /* A delay of 50 ms seems to be enough, increase it otherwise. */
-})();
+/* Select all text from the generated command line to ease copy/paste. */
+function selectAll() {
+  document.getElementById("patchCmdBox").select()
+}
+
+/* Update the “disabled” property of an option name for a textbox, and its
+ * associated label, in accordance with the patchCmd-useField* preference.
+ *
+ * @param   aId   Full id of the patchCmd-useField preference to check.
+ */
+function switchStateTextbox(aId) {
+  let elemId    = aId.substring("patchCmd-useField".length);
+  let textboxId = "optionName" + elemId;
+  let labelId   = textboxId    + "Label";
+  let prefState = document.getElementById(aId).value;
+
+  /* On preference reset, the value is undefined; fetch the default option from
+   * Thunderbird's preferences service.
+   */
+  if (prefState === undefined)
+    prefState = Components.classes["@mozilla.org/preferences-service;1"]
+      .getService(Components.interfaces.nsIPrefService)
+      .getBoolPref(document.getElementById(aId).name);
+
+  document.getElementById(textboxId).disabled = !prefState;
+  document.getElementById(labelId).disabled   = !prefState;
+  selectAll();
+}
+
+/* Reset both the option name and the field usage for the field of a given row.
+ *
+ * @param   aId   Id of the reset button that was pressed.
+ */
+function resetRow(aId) {
+  let useFieldId   = aId.replace("resetButton", "patchCmd-useField");
+  let optionNameId = aId.replace("resetButton", "patchCmd-optionName");
+  document.getElementById(useFieldId).reset();
+  document.getElementById(optionNameId).reset();
+  selectAll();
+}
+
+/* Reset all values for the regexp. */
+function resetRegexp() {
+  for (let s of ['Pattern', 'Flags', 'Substitute'])
+    document.getElementById('patchCmd-regexp' + s).reset();
+}
+
+/* Debug function; print arguments in a label on bottom of the pop-up. */
+function debug(aInfo, aAppend = false) {
+  let label = document.getElementById("patchCmd-debug");
+  let info  = JSON.stringify(aInfo);
+  if (aAppend && label.value)
+    label.value += info;
+  else
+    label.value  = info;
+}

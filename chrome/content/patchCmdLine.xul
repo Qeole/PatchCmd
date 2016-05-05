@@ -2,20 +2,208 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://patchcmd/skin/popup.css" type="text/css"?>
 
-<dialog
+<prefwindow
   id="patchCmd-popup"
-  title="This is your command line to send a patch!"
+  title="Generate patch command"
   width="1200"
-  height="300"
-  buttons="accept"
+  height="520"
+  instantApply="true"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <prefpane id="patchCmdPane">
+
+  <script type="application/javascript"
+    src="chrome://patchcmd/content/patchcmd.js"/>
+
+  <preferences>
+    <preference id="patchCmd-optionNamePrefix"    name="patchCmd.optionName.prefix"     type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameSubject"   name="patchCmd.optionName.subject"    type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameFrom"      name="patchCmd.optionName.from"       type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameTo"        name="patchCmd.optionName.to"         type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameCc"        name="patchCmd.optionName.cc"         type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameBcc"       name="patchCmd.optionName.bcc"        type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameMessageId" name="patchCmd.optionName.message-id" type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameSuffix"    name="patchCmd.optionName.suffix"     type="string" onchange="patchCmdUpdate()"/>
+
+    <preference id="patchCmd-useFieldPrefix"    name="patchCmd.useField.prefix"     type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldSubject"   name="patchCmd.useField.subject"    type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldFrom"      name="patchCmd.useField.from"       type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldTo"        name="patchCmd.useField.to"         type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldCc"        name="patchCmd.useField.cc"         type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldBcc"       name="patchCmd.useField.bcc"        type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldMessageId" name="patchCmd.useField.message-id" type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldSuffix"    name="patchCmd.useField.suffix"     type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+
+    <preference id="patchCmd-regexpPattern"    name="patchCmd.regexp.pattern"    type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-regexpFlags"      name="patchCmd.regexp.flags"      type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-regexpSubstitute" name="patchCmd.regexp.substitute" type="string" onchange="patchCmdUpdate()"/>
+  </preferences>
+
+  <!-- Settings for option names and selection. -->
+  <hbox>
+    <vbox>
+      <label id="patchCmd-settingsTopLabel"
+        value="Configure the fields you want to use:"/>
+      <separator/>
+      <grid>
+        <columns>
+          <column/>
+          <column/>
+          <column/>
+          <column/>
+        </columns>
+        <rows>
+          <row align="baseline">
+            <checkbox id="useFieldPrefix" label="Use prefix"
+              preference="patchCmd-useFieldPrefix"/>
+            <label    id="optionNamePrefixLabel"
+              value="Value for prefix:"/>
+            <textbox  id="optionNamePrefix" class="optionName"
+              size="30" preference="patchCmd-optionNamePrefix"/>
+            <button   id="resetButtonPrefix" label="Reset"
+              oncommand="resetRow(this.id);"/>
+          </row>
+          <row align="baseline">
+            <checkbox id="useFieldSubject" label="Use subject"
+              preference="patchCmd-useFieldSubject"/>
+            <label    id="optionNameSubjectLabel"
+              value="Value for “subject” option name:"/>
+            <textbox  id="optionNameSubject" class="optionName"
+              size="30" preference="patchCmd-optionNameSubject"/>
+            <button   id="resetButtonSubject" label="Reset"
+              oncommand="resetRow(this.id);"/>
+          </row>
+          <row align="baseline">
+            <checkbox id="useFieldFrom" label="Use from"
+              preference="patchCmd-useFieldFrom"/>
+            <label    id="optionNameFromLabel"
+              value="Value for “from” option name:"/>
+            <textbox  id="optionNameFrom" class="optionName"
+              size="30" preference="patchCmd-optionNameFrom"/>
+            <button   id="resetButtonFrom" label="Reset"
+              oncommand="resetRow(this.id);"/>
+          </row>
+          <row align="baseline">
+            <checkbox id="useFieldTo" label="Use to"
+              preference="patchCmd-useFieldTo"/>
+            <label    id="optionNameToLabel"
+              value="Value for “to” option name:"/>
+            <textbox  id="optionNameTo" class="optionName"
+              size="30" preference="patchCmd-optionNameTo"/>
+            <button   id="resetButtonTo" label="Reset"
+              oncommand="resetRow(this.id);"/>
+          </row>
+          <row align="baseline">
+            <checkbox id="useFieldCc" label="Use cc"
+              preference="patchCmd-useFieldCc"/>
+            <label    id="optionNameCcLabel"
+              value="Value for “cc” option name:"/>
+            <textbox  id="optionNameCc" class="optionName"
+              size="30" preference="patchCmd-optionNameCc"/>
+            <button   id="resetButtonCc" label="Reset"
+              oncommand="resetRow(this.id);"/>
+          </row>
+          <row align="baseline">
+            <checkbox id="useFieldBcc" label="Use bcc"
+              preference="patchCmd-useFieldBcc"/>
+            <label    id="optionNameBccLabel"
+              value="Value for “bcc” option name:"/>
+            <textbox  id="optionNameBcc" class="optionName"
+              size="30" preference="patchCmd-optionNameBcc"/>
+            <button   id="resetButtonBcc" label="Reset"
+              oncommand="resetRow(this.id);"/>
+          </row>
+          <row align="baseline">
+            <checkbox id="useFieldMessageId" label="Use message-id"
+              preference="patchCmd-useFieldMessageId"/>
+            <label    id="optionNameMessageIdLabel"
+              value="Value for “message-id” option name:"/>
+            <textbox  id="optionNameMessageId" class="optionName"
+              size="30" preference="patchCmd-optionNameMessageId"/>
+            <button   id="resetButtonMessageId" label="Reset"
+              oncommand="resetRow(this.id);"/>
+          </row>
+          <row align="baseline">
+            <checkbox id="useFieldSuffix" label="Use suffix"
+              preference="patchCmd-useFieldSuffix"/>
+            <label    id="optionNameSuffixLabel"
+              value="Value for suffix:"/>
+            <textbox  id="optionNameSuffix" class="optionName"
+              size="30" preference="patchCmd-optionNameSuffix"/>
+            <button   id="resetButtonSuffix" label="Reset"
+              oncommand="resetRow(this.id);"/>
+          </row>
+        </rows>
+      </grid>
+    </vbox>
+
+    <!-- A post-processing regexp. -->
+    <spacer flex="1"/>
+    <vbox>
+      <description style="width: 200px;">
+        You can optionally use a JavaScript regexp for post-processing. It will be applied to the generated command line.
+      </description>
+      <description style="width: 200px;">
+        Usage: indicate a pattern, flags, and a substitute string in the fields below.
+      </description>
+      <hbox>
+        <spacer flex="1"/>
+        <label value="More info" class="text-link plain"
+          href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace"/>
+      </hbox>
+      <separator/>
+      <hbox align="baseline">
+        <label class="monospace plain" value="string.replace(/"
+          style="margin-left: 6px !important;"/>
+        <textbox id="regexpPattern"    size="12"
+          preference="patchCmd-regexpPattern"/>
+        <label class="monospace plain" value="/"/>
+        <textbox id="regexpFlags"      size="3"
+          preference="patchCmd-regexpFlags"/>
+        <label class="monospace plain" value=", "/>
+        <textbox id="regexpSubstitute" size="12"
+          preference="patchCmd-regexpSubstitute"/>
+        <label class="monospace plain" value=")"/>
+      </hbox>
+      <hbox>
+        <spacer flex="1"/>
+        <button id="resetButtonRegexp" label="Reset"
+          oncommand="resetRegexp(); patchCmdUpdate(); selectAll();"/>
+      </hbox>
+    </vbox>
+  </hbox>
+
+  <separator/>
+  <hbox align="baseline">
+    <label id="patchCmd-settingsTopLabel"
+      value="This is your generated command line to send a patch!"/>
+    <button id="patchCmd-selectAllButton" label="Select all"
+      oncommand="selectAll();"/>
+  </hbox>
 
   <!-- The text box that contains the generated command line. -->
   <textbox id="patchCmdBox"
     rows="10"
     multiline="true"/>
 
-  <!-- Load the script in the end, or it will not find the text box. -->
-  <script type="application/javascript"
-    src="chrome://patchcmd/content/patchcmd.js"/>
-</dialog>
+</prefpane>
+
+  <!-- Just a label to print debug info. -->
+  <label id="patchCmd-debug" value=""/>
+
+  <!-- Update setting fields disabled state and generate command line display. -->
+  <script type="application/javascript">
+    for (let fieldName of ["Prefix", "Subject", "From", "To", "Cc", "Bcc",
+                           "MessageId", "Suffix"])
+      switchStateTextbox("patchCmd-useField" + fieldName);
+
+    patchCmdUpdate();
+
+    /* Asynchrony - wait for the generated text to be added before triggering
+     * selection.
+     */
+    setTimeout(function () {
+      selectAll();
+    }, 10); /* A delay of 10 ms seems to be enough, increase it otherwise. */
+  </script>
+</prefwindow>

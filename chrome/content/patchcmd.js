@@ -10,7 +10,7 @@ function patchCmdUpdate() {
   /* Get the list of the headers we want to use to create options. */
   let prefs = Components.classes["@mozilla.org/preferences-service;1"]
     .getService(Components.interfaces.nsIPrefService)
-    .getBranch("patchCmd.");
+    .getBranch("extensions.patchCmd.");
   let fieldsToPrint = {
     prefix:       prefs.getBoolPref("useField.prefix"),
     subject:      prefs.getBoolPref("useField.subject"),

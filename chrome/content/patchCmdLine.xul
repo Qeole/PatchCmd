@@ -16,27 +16,27 @@
     src="chrome://patchcmd/content/patchcmd.js"/>
 
   <preferences>
-    <preference id="patchCmd-optionNamePrefix"    name="patchCmd.optionName.prefix"     type="string" onchange="patchCmdUpdate()"/>
-    <preference id="patchCmd-optionNameSubject"   name="patchCmd.optionName.subject"    type="string" onchange="patchCmdUpdate()"/>
-    <preference id="patchCmd-optionNameFrom"      name="patchCmd.optionName.from"       type="string" onchange="patchCmdUpdate()"/>
-    <preference id="patchCmd-optionNameTo"        name="patchCmd.optionName.to"         type="string" onchange="patchCmdUpdate()"/>
-    <preference id="patchCmd-optionNameCc"        name="patchCmd.optionName.cc"         type="string" onchange="patchCmdUpdate()"/>
-    <preference id="patchCmd-optionNameBcc"       name="patchCmd.optionName.bcc"        type="string" onchange="patchCmdUpdate()"/>
-    <preference id="patchCmd-optionNameMessageId" name="patchCmd.optionName.message-id" type="string" onchange="patchCmdUpdate()"/>
-    <preference id="patchCmd-optionNameSuffix"    name="patchCmd.optionName.suffix"     type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNamePrefix"    name="extensions.patchCmd.optionName.prefix"     type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameSubject"   name="extensions.patchCmd.optionName.subject"    type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameFrom"      name="extensions.patchCmd.optionName.from"       type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameTo"        name="extensions.patchCmd.optionName.to"         type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameCc"        name="extensions.patchCmd.optionName.cc"         type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameBcc"       name="extensions.patchCmd.optionName.bcc"        type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameMessageId" name="extensions.patchCmd.optionName.message-id" type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-optionNameSuffix"    name="extensions.patchCmd.optionName.suffix"     type="string" onchange="patchCmdUpdate()"/>
 
-    <preference id="patchCmd-useFieldPrefix"    name="patchCmd.useField.prefix"     type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
-    <preference id="patchCmd-useFieldSubject"   name="patchCmd.useField.subject"    type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
-    <preference id="patchCmd-useFieldFrom"      name="patchCmd.useField.from"       type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
-    <preference id="patchCmd-useFieldTo"        name="patchCmd.useField.to"         type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
-    <preference id="patchCmd-useFieldCc"        name="patchCmd.useField.cc"         type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
-    <preference id="patchCmd-useFieldBcc"       name="patchCmd.useField.bcc"        type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
-    <preference id="patchCmd-useFieldMessageId" name="patchCmd.useField.message-id" type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
-    <preference id="patchCmd-useFieldSuffix"    name="patchCmd.useField.suffix"     type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldPrefix"    name="extensions.patchCmd.useField.prefix"     type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldSubject"   name="extensions.patchCmd.useField.subject"    type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldFrom"      name="extensions.patchCmd.useField.from"       type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldTo"        name="extensions.patchCmd.useField.to"         type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldCc"        name="extensions.patchCmd.useField.cc"         type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldBcc"       name="extensions.patchCmd.useField.bcc"        type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldMessageId" name="extensions.patchCmd.useField.message-id" type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
+    <preference id="patchCmd-useFieldSuffix"    name="extensions.patchCmd.useField.suffix"     type="bool" onchange="patchCmdUpdate();switchStateTextbox(this.id);"/>
 
-    <preference id="patchCmd-regexpPattern"    name="patchCmd.regexp.pattern"    type="string" onchange="patchCmdUpdate()"/>
-    <preference id="patchCmd-regexpFlags"      name="patchCmd.regexp.flags"      type="string" onchange="patchCmdUpdate()"/>
-    <preference id="patchCmd-regexpSubstitute" name="patchCmd.regexp.substitute" type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-regexpPattern"    name="extensions.patchCmd.regexp.pattern"    type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-regexpFlags"      name="extensions.patchCmd.regexp.flags"      type="string" onchange="patchCmdUpdate()"/>
+    <preference id="patchCmd-regexpSubstitute" name="extensions.patchCmd.regexp.substitute" type="string" onchange="patchCmdUpdate()"/>
   </preferences>
 
   <!-- Settings for option names and selection. -->

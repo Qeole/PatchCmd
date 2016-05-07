@@ -3,4 +3,3 @@ content         patchcmd                        chrome/content/
 skin            patchcmd        classic/1.0     chrome/skin/
 
 overlay chrome://messenger/content/mailWindowOverlay.xul                        chrome://patchcmd/content/mailWindowOverlay.xul
-overlay chrome://messenger/content/messengercompose/messengercompose.xul        chrome://patchcmd/content/msgcomposetoolbar.xul
